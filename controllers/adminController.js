@@ -1,5 +1,6 @@
 const AdminRepository = require('../repositories/adminRepository');
 const bcrypt = require('bcrypt');
+const JWT = require('jsonwebtoken');
 
 class ErrorValidation {
     constructor(code, message) {
@@ -15,6 +16,46 @@ class ErrorValidation {
 }
 
 class Admin {
+    async loginAdmin(req, res) {
+        try {
+            let { email, password } = req.body;
+            let returnedAdmin = await AdminRepository.findByEmail(email);
+            console.log(returnedAdmin);
+            if (returnedAdmin) {
+                bcrypt.compare(password, returnedAdmin.password, async (err, result) => {
+                    try {
+                        if (!err) {
+                            if (result) {
+                                let token = JWT.sign({ type: 'admin', id: returnedAdmin.id, email: returnedAdmin.email },
+                                    process.env.JWT_SECRET, { expiresIn: '60m' });
+                                return res.status(200).json({ message: 'Admin logado com sucesso!', token });
+                            }
+                            throw new ErrorValidation(202, 'Email ou senha incorretos!');
+                        }
+                        throw new ErrorValidation(500, 'Um error ocorreu ao efetuar o login');
+                    } catch (err) {
+                        if (err instanceof ErrorValidation) {
+                            return res.status(err.code).json({ error: err.message });
+                        } else {
+                            console.log(err);
+                            return res.status(500).json({ message: 'Um erro aconteceu ao utilizar a base de dados.' });
+                        }
+                    }
+                });
+            } else {
+                return res.status(400).json({ message: 'Email/senha incorretos!' });
+            }
+        } catch (err) {
+            if (err instanceof ErrorValidation) {
+                return res.status(err.code).json({ error: err.message });
+            } else {
+                console.log(err);
+                return res.status(500).json({ message: 'Um erro aconteceu ao utilizar a base de dados.' });
+            }
+        }
+    }
+
+
     async createAdmin(req, res) {
         try {
             let { email, password } = req.body;
@@ -44,6 +85,7 @@ class Admin {
             }
         }
     }
+
 }
 
 module.exports = new Admin;

@@ -1,11 +1,19 @@
 const Client = require('../models/Client');
 const { Op } = require('sequelize');
+const Phone = require('../models/Phone');
 
 const clientRepository = {
     findAll: async function () {
         try {
             return await Client.findAll();
 
+        } catch (err) {
+            console.log(err);
+        }
+    },
+    findById: async function (id) {
+        try {
+            return await Client.findByPk(id, { include: [{ model: Phone }] });
         } catch (err) {
             console.log(err);
         }
@@ -39,6 +47,36 @@ const clientRepository = {
             console.log(err);
         }
     },
+    findByName: async function (name) {
+        try {
+            return await Client.findAll({ where: { name: { [Op.substring]: name } } });
+        } catch (err) {
+            console.log(err);
+        }
+    },
+
+    findBySex: async function (sex) {
+        try {
+            return await Client.findAll({ where: { sex: { [Op.eq]: sex } } });
+        } catch (err) {
+            console.log(err);
+        }
+    },
+    findByState: async function (state) {
+        try {
+            return await Client.findAll({ where: { state: { [Op.eq]: state } } });
+        } catch (err) {
+            console.log(err);
+        }
+    },
+    findByCreatedAt: async function (createdDate) {
+        try {
+            return await Client.findAll({ where: { createdAt: { [Op.substring]: createdDate } } });
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    ,
     delete: async function (id) {
         try {
             return await Client.destroy({ where: { id } });

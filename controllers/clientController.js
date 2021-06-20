@@ -27,19 +27,28 @@ class Client {
             let { email, password } = req.body;
             let returnedClient = await ClientRepository.findByEmail(email);
             if (returnedClient) {
-                bcrypt.compare(password, returnedClient.password, (err, result) => {
-                    if (!err) {
-                        if (result) {
-                            let token = JWT.sign({ type: 'client', id: returnedClient.id, email: returnedClient.email },
-                                '432734217094321980567601098479', { expiresIn: '60m' });
-                            return res.status(200).json({ message: 'Cliente logado com sucesso', token });
+                bcrypt.compare(password, returnedClient.password, async (err, result) => {
+                    try {
+                        if (!err) {
+                            if (result) {
+                                let token = JWT.sign({ type: 'client', id: returnedClient.id, email: returnedClient.email },
+                                    process.env.JWT_SECRET, { expiresIn: '60m' });
+                                return res.status(200).json({ message: 'Cliente logado com sucesso', token: token });
+                            }
+                            throw new ErrorValidation(400, 'Email/senha incorretos');
                         }
-                        throw new ErrorValidation(202, 'Email ou senha incorretos!');
+                        throw new ErrorValidation(500, 'Um error ocorreu ao efetuar o login');
+                    } catch (err) {
+                        if (err instanceof ErrorValidation) {
+                            return res.status(err.code).json({ error: err.message });
+                        } else {
+                            console.log(err);
+                            return res.status(500).json({ message: 'Um erro aconteceu ao utilizar a base de dados.' });
+                        }
                     }
-                    throw new ErrorValidation(500, 'Um error ocorreu ao efetuar o login');
                 });
             } else {
-                return res.status(400).json({ message: 'Email/senha incorretos' });
+                return res.status(400).json({ error: 'Email/senha incorretos' });
             }
         } catch (err) {
             if (err instanceof ErrorValidation) {
@@ -55,8 +64,44 @@ class Client {
 
     async findClients(req, res) {
         try {
+            let { name, sex, state, createdDate } = req.query;
+            if (name) {
+                let findByName = await ClientRepository.findByName(name);
+                return res.status(200).json({ clients: findByName });
+            }
+            if (sex) {
+                let findBySex = await ClientRepository.findBySex(sex);
+                return res.status(200).json({ clients: findBySex });
+            }
+            if (state) {
+                let findByState = await ClientRepository.findByState(state);
+                return res.status(200).json({ clients: findByState });
+            }
+            if (createdDate) {
+                let findByCreatedDate = await ClientRepository.findByCreatedAt(createdDate);
+                return res.status(200).json({ clients: findByCreatedDate });
+            }
             let returnedClients = await ClientRepository.findAll();
-            res.status(200).json({ clients: returnedClients });
+            return res.status(200).json({ clients: returnedClients });
+        } catch (err) {
+            if (err instanceof ErrorValidation) {
+                return res.status(err.code).json({ error: err.message });
+            } else {
+                console.log(err);
+                return res.status(500).json({ message: 'Um erro aconteceu ao utilizar a base de dados.' });
+            }
+        }
+    }
+
+    async findClientsById(req, res) {
+        try {
+            let { id } = req.params;
+            let returnedClients = await ClientRepository.findById(id);
+            if (returnedClients) {
+                return res.status(200).json(returnedClients);
+            } else {
+                throw new ErrorValidation(400, 'Cliente não encontrado de acordo com o id');
+            }
         } catch (err) {
             if (err instanceof ErrorValidation) {
                 return res.status(err.code).json({ error: err.message });
@@ -182,14 +227,16 @@ class Client {
                     throw new ErrorValidation(400, 'Preencha o campo de DD e telefone referente ao celular');
                 }
             }
-
+            console.log(req.body, '===================');
             bcrypt.hash(password, 10, async (err, hashPassword) => {
                 if (!err) {
                     let createdClient = await ClientRepository.create({
                         name, birth, cpf: rawCpf, rg, sex, zipCode, address, number, district, complement, state,
                         city, email, password: hashPassword, status
                     });
+                    
                     phones.forEach(async (phone) => {
+
                         await PhoneRepository.create({ ...phone, ClientId: createdClient.id });
                     });
                     return res.status(201).json({ message: 'Cliente criado com sucesso!' });
@@ -244,7 +291,7 @@ class Client {
                 }
             }
 
-            if (sex == '' || sex == ' ' || sex == undefined) {
+            if (sex === '' || sex === ' ' || sex == undefined) {
                 throw new ErrorValidation(400, 'O sexo não pode ser vazio!');
             }
             if (sex != 0 && sex != 1) {
@@ -282,7 +329,8 @@ class Client {
             if (city == '' || city == ' ' || city == undefined) {
                 throw new ErrorValidation(400, 'A cidade não pode ser vazia!');
             }
-            if (status == '' || status == ' ' || status == undefined) {
+
+            if (status === '' || status === ' ' || status == undefined) {
                 throw new ErrorValidation(400, 'O status não pode ser vazio!');
             }
             if (status != 0 && status != 1) {
@@ -372,6 +420,7 @@ class Client {
     async deleteClient(req, res) {
         try {
             let { id } = req.params;
+
             let deleted = await ClientRepository.delete(id);
             if (deleted) {
                 return res.status(200).json({ message: 'Cliente deletado com sucesso!' })

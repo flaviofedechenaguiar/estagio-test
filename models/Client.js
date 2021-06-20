@@ -22,7 +22,7 @@ const Client = connection.define('Clients', {
         allowNull: false
     },
     zipCode: {
-        type: Sequelize.STRING(8),
+        type: Sequelize.STRING(9),
         allowNull: false
     },
     address: {
