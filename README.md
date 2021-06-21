@@ -41,5 +41,14 @@ user@user:~/Desktop/projectfolder/api$ docker-compose up
  ```
  mysql-container | 2021-06-21T00:59:16.270917Z 0 [System] [MY-010931] [Server] /usr/sbin/mysqld: ready for connections. Version: '8.0.25'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
  ```
+ Obs: Pode ocorrer um erro por conta do Sequelize tentar fazer um conexão com o banco enquanto esta criando. Caso ocorra execute o comando novamente.
  
+**BACKEND PRONTO!**
  
+ ## FRONTEND
+ ### ### As técnologias utilizadas são:
+- Vue
+- Bootstrap
+- Axios
+
+### Executando o Projeto
