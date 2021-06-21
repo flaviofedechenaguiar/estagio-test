@@ -351,7 +351,6 @@ export default {
           numberCellPhone: this.numberCellPhone,
         });
         this.$router.push({ name: "LoginClient" });
-
       } catch (err) {
         let response = err.response.data;
         this.hasError = response.error;

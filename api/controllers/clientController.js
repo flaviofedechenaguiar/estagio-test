@@ -267,7 +267,6 @@ class Client {
             } else {
                 id = req.params.id;
             }
-            let { id } = req.params;
             let { name, birth, cpf, rg, sex, zipCode, address, number, district, complement, state,
                 city, email, password, status, ddPhone, numberPhone, ddCellPhone, numberCellPhone } = req.body;
 
