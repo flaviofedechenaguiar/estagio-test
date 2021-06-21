@@ -46,9 +46,34 @@ user@user:~/Desktop/projectfolder/api$ docker-compose up
 **BACKEND PRONTO!**
  
  ## FRONTEND
- ### ### As técnologias utilizadas são:
+ ### As técnologias utilizadas são:
 - Vue
 - Bootstrap
 - Axios
 
 ### Executando o Projeto
+
+Para executar o projeto
+
+- Vá ao diretório raiz da Api.
+```
+user@user:~/Desktop/projectfolder$ ls
+api  front-end  README.md
+user@user:~/Desktop/projectfolder$ cd front-end
+```
+- Execute o comando `npm install`
+ ```
+user@user:~/Desktop/projectfolder/front-end$ ls
+babel.config.js  node_modules  package.json  package-lock.json  public  README.md  src
+user@user:~/Desktop/projectfolder/front-end$ npm install
+ ```
+ - Execute o comando `npm run serve`
+ ```
+user@user:~/Desktop/projectfolder/front-end$ ls
+babel.config.js  node_modules  package.json  package-lock.json  public  README.md  src
+user@user:~/Desktop/projectfolder/front-end$ npm run serve
+ ```
+ 
+ ### Utilizando a Aplicação
+ - No navegador entre no link `http://localhost:8080`
+ 
