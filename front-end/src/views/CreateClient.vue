@@ -350,11 +350,8 @@ export default {
           ddCellPhone: this.ddCellPhone,
           numberCellPhone: this.numberCellPhone,
         });
-<<<<<<< HEAD
         this.$router.push({ name: "LoginClient" });
-=======
-        //this.$router.push({ name: "LoginClient" });
->>>>>>> 7143d3c7945827503335368522b407ee02d786fc
+
       } catch (err) {
         let response = err.response.data;
         this.hasError = response.error;
