@@ -76,5 +76,13 @@ user@user:~/Desktop/projectfolder/front-end$ npm run serve
  
  ### Utilizando a Aplicação
  - No navegador entre no link `http://localhost:8080`
- - ![image1](https://cdn.discordapp.com/attachments/490594796088459275/838819140713185300/Screenshot_from_2021-05-03_13-46-01.png)
+ - ![image1](https://cdn.discordapp.com/attachments/490594796088459275/856342807719051264/Screenshot_from_2021-06-20_22-20-06.png)
  
+ #### Rotas da Aplicação
+ - `/` Reponsável pelo login do Cliente no Sistema
+ - `/create` Responsável por criar um novo Cliente
+ - `/edit` Responsável por editar o Client
+ - `/admin` Responsável pelo login do Administrador no Sistema
+ - `/admin/create` Responsável pela criação de um novo Administrador (Apenas para fins de Testes)
+ - `/admin/panel` Responsável pela exibição do painel do Administrador
+ - `/admin/edit/{id}` Responsável pela edição de um determinado Cliente
